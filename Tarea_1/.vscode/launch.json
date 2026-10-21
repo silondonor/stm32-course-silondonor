@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "stlinkgdbtarget",
+            "request": "launch",
+            "name": "STM32Cube: Launch ST-Link GDB Server",
+            "origin": "snippet",
+            "cwd": "${workspaceFolder}",
+            "preBuild": "${command:st-stm32-ide-debug-launch.build}",
+            "runEntry": "main",
+            "imagesAndSymbols": [
+                {
+                    "imageFileName": "${command:st-stm32-ide-debug-launch.get-projects-binary-from-context1}"
+                }
+            ],
+            // Launch the real GDB server directly instead of through the "cube"
+            // wrapper. VS Code sends SIGTERM to the process it spawned; the cube
+            // wrapper does not forward it, so the server survived as an orphan and
+            // kept the ST-LINK probe (and port 61234) busy until the board was
+            // unplugged. Spawning the server itself makes Stop terminate it cleanly.
+            "serverExe": "ST-LINK_gdbserver",
+            "serverCwd": "${userHome}/.local/share/stm32cube/bundles/stlink-gdbserver/7.14.0+st.2/bin",
+            // Safety net: clean up any leftover server after the session ends.
+            "postDebugTask": "kill-stlink-gdbserver"
+        }
+    ]
+}

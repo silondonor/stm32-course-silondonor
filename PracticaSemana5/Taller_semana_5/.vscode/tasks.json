@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            // Safety net for the ST-LINK probe: if a GDB server ever survives the
+            // end of a debug session it keeps the probe and port 61234 busy, and
+            // the next launch silently fails. This kills any leftover instance.
+            // "exit 0" keeps the task green when there is nothing to kill.
+            // The [S] keeps pkill from matching (and killing) this task's own
+            // shell, whose command line also contains the name.
+            "label": "kill-stlink-gdbserver",
+            "type": "shell",
+            "command": "pkill -f '[S]T-LINK_gdbserver'; exit 0",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "dedicated",
+                "close": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
